@@ -1,0 +1,80 @@
+.claude/
+.claude*
+CLAUDE.md
+CLAUDE.local.md
+**/CLAUDE.md
+.mcp.json
+
+## Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+
+## Visual Studio / Rider / VS Code
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.DotSettings.user
+
+## Test results & coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+*.trx
+TestResults/
+
+## NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+## ASP.NET Core / Blazor
+**/wwwroot/dist/
+compilerconfig.json.defaults
+*.publishsettings
+PublishScripts/
+publish/
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+## Local configuration & secrets
+*.[Ll]ocal.json
+.env
+.env.*
+secrets.json
+
+## Local databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.ndf
+
+## Misc / OS
+*.tmp
+*.cache
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
