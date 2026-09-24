@@ -1,0 +1,46 @@
+﻿@page "/routines"
+
+<PageTitle>Routines</PageTitle>
+
+<div class="routines-page">
+    <h1 class="mb-4">Your Routines</h1>
+    <div class="card mb-4">
+
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center py-3">
+                <span class="icon-box me-3"></span>
+                <span class="fw-semibold">New Routine</span>
+                <span class="ms-auto text-secondary fs-5">&rsaquo;</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center py-3">
+                <span class="icon-box me-3"></span>
+                <span class="fw-semibold">New Routine</span>
+                <span class="ms-auto text-secondary fs-5">&rsaquo;</span>
+            </a>
+        </div>
+
+    </div>
+    
+    <div class="d-flex align-items-center mb-2">
+        <button class="btn btn-link text-body text-decoration-none p-0 fw-semibold" data-bs-toggle="modal" data-bs-target="#RoutineModal">
+            Routines
+        </button>
+        <button class="btn btn-link text-bg-secondary ms-auto p-0" data-bs-theme="dark" >&ctdot;</button>
+    </div>
+
+    @* <div class="collapse show" id="RoutineModal">
+        @foreach (var routine in RoutineModal)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <h6 class="fw-semibold mb-1">@routine.Name</h6>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>  *@
+
+
+
+</div>
