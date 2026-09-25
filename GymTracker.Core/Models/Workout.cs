@@ -4,7 +4,10 @@ using System.Text;
 
 namespace GymTracker.Core.Models
 {
-    internal class Workout
+    public class Workout
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<Exercise> Routines { get; set; } = new();
     }
 }
