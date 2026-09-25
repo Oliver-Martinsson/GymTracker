@@ -3,7 +3,7 @@
 
 ## Related Issue
 <!-- Link the relevant issue (e.g. Fixes #123 or Closes #456). -->
-Fixes #
+#
 
 ## Type of Change
 <!-- Mark the appropriate checkbox with an [x]. -->
