@@ -8,6 +8,6 @@ namespace GymTracker.Core.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<WorkoutExercise> WorkoutExercise { get; set; } = new();
+        public List<WorkoutExercise> WorkoutExercises { get; set; } = new();
     }
 }
