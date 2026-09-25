@@ -6,6 +6,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GymTracker.Core\GymTracker.Core.csproj" />
+    <ProjectReference Include="..\GymTracker.Infrastructure\GymTracker.Infrastructure.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -17,6 +19,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <UserSecretsId>33906f01-b3f1-495f-ac50-de56496ea61a</UserSecretsId>
     <UserSecretsId>071ae080-e666-4a46-b406-60e5c5e8bf84</UserSecretsId>
   </PropertyGroup>
 
