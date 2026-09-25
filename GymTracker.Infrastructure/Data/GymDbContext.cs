@@ -20,7 +20,7 @@ namespace GymTracker.Infrastructure.Data
 
             modelBuilder.Entity<WorkoutExercise>()
                 .HasOne(we => we.Workout)
-                .WithMany(w => w.WorkoutExercise)
+                .WithMany(w => w.WorkoutExercises)
                 .HasForeignKey(we => we.WorkoutId);
 
             modelBuilder.Entity<WorkoutExercise>()
