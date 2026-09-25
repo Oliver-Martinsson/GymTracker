@@ -10,7 +10,7 @@ namespace GymTracker.Core.Models
         public int WorkoutId { get; set; }
         public Workout Workout { get; set; } = null!;
 
-        public int ExerciseId { get; set; }
+        public string ExerciseId { get; set; } = string.Empty;
         public Exercise Exercise { get; set; } = null!;
 
         public int Sets { get; set; }
