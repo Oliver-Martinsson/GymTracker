@@ -1,6 +1,6 @@
 ﻿@page "/routines"
 @using GymTracker.Core.Interfaces
-@rendermode  InteractiveServer
+@rendermode InteractiveServer
 @inject IWorkoutRepository Repo
 @using GymTracker.Core.Models
 
@@ -12,7 +12,7 @@
     <div class="card mb-4">
 
         <div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center py-3">
+            <a href="/routines/new" class="list-group-item list-group-item-action d-flex align-items-center py-3">
                 <span class="icon-box me-3"></span>
                 <span class="fw-semibold">New Routine</span>
                 <span class="ms-auto text-secondary fs-5">&rsaquo;</span>
