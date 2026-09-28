@@ -1,4 +1,4 @@
-![CI](https://github.com/Oliver-Martinsson/system_25_Laboration/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Oliver-Martinsson/GymTracker/actions/workflows/ci.yml/badge.svg)
 
 Gym Tracker 🏋️
 Gym Tracker is a web application for logging strength training workouts and tracking progression over time.
