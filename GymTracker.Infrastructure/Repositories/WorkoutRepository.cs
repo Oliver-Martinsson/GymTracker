@@ -19,7 +19,6 @@ public class WorkoutRepository : IWorkoutRepository
         await using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Workouts
             .Include(w => w.WorkoutExercises)
-            .ThenInclude(we => we.Exercise)
             .ToListAsync();
     }
 
@@ -28,7 +27,6 @@ public class WorkoutRepository : IWorkoutRepository
         await using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Workouts
             .Include(w => w.WorkoutExercises)
-            .ThenInclude(we => we.Exercise)
             .FirstOrDefaultAsync(w => w.Id == id);
     }
 

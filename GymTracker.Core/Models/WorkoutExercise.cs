@@ -11,7 +11,6 @@ namespace GymTracker.Core.Models
         public Workout Workout { get; set; } = null!;
 
         public string ExerciseId { get; set; } = string.Empty;
-        public Exercise Exercise { get; set; } = null!;
 
         public int Sets { get; set; }
         public int Reps { get; set; }
