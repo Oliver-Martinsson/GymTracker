@@ -1,5 +1,8 @@
 ﻿@page "/routines"
-
+@using GymTracker.Core.Interfaces
+@rendermode  InteractiveServer
+@inject IWorkoutRepository Repo
+@using GymTracker.Core.Models
 <PageTitle>Routines</PageTitle>
 
 <div class="routines-page">
@@ -44,3 +47,4 @@
 
 
 </div>
+
