@@ -75,7 +75,5 @@ namespace GymTracker.Core.Models
 
         [JsonPropertyName("movement_tags")]
         public List<string> MovementTags { get; set; } = new();
-
-        public List<WorkoutExercise> WorkoutExercises { get; set; } = new();
     }
 }

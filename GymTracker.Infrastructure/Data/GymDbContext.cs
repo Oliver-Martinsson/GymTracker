@@ -11,7 +11,6 @@ namespace GymTracker.Infrastructure.Data
         public GymDbContext(DbContextOptions<GymDbContext> options) : base(options){ }
 
         public DbSet<Workout> Workouts { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
         public DbSet<WorkoutExercise> WorkoutExercises { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,11 +21,6 @@ namespace GymTracker.Infrastructure.Data
                 .HasOne(we => we.Workout)
                 .WithMany(w => w.WorkoutExercises)
                 .HasForeignKey(we => we.WorkoutId);
-
-            modelBuilder.Entity<WorkoutExercise>()
-                .HasOne(we => we.Exercise)
-                .WithMany(e => e.WorkoutExercises)
-                .HasForeignKey(we =>we.ExerciseId);
         }
     }
 }
