@@ -1,9 +1,39 @@
-﻿@page "/routines/AddRoutine"
+﻿@page "/routines/new"
+@rendermode InteractiveServer
+@using GymTracker.Core.Interfaces
+@using GymTracker.Core.Models
+@inject IWorkoutRepository Repo
+@inject NavigationManager Nav
+
+
+
 <h3>AddRoutine</h3>
 
 <PageTitle>New Routine</PageTitle>
 
+<div class="routines-page">
+    <h1 class="mb-4">New Routines</h1>
+    
+    <EditForm Model="newRoutine" OnValidSubmit="Save">
+        <div class="mb-3">
+            <label class="form-label">Routine Name</label>
+            <InputText @bind-Value="newRoutine.Name" class="form-control" placeholder="e.g Push Day"/>
+        </div>
+        <button type="submit" class="btn btn-primary">save</button>
+        <a href="/routines" class="btn btn-link">Cancel</a>
+    </EditForm>
+</div>
+
 
 @code {
-    
+    private Workout newRoutine = new();
+
+    private async Task Save()
+    {
+        if (string.IsNullOrEmpty(newRoutine.Name))
+            return;
+        
+        await Repo.AddAsync(newRoutine);
+        Nav.NavigateTo("/routines");
+    }
 }
