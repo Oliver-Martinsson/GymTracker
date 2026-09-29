@@ -56,4 +56,17 @@ public class WorkoutRepository : IWorkoutRepository
         context.Workouts.Remove(workout);
         await context.SaveChangesAsync();
     }
+
+    public async Task RemoveExerciseAsync(int workoutExerciseId)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        var workoutExercise = await context.WorkoutExercises.FindAsync(workoutExerciseId);
+        if (workoutExercise is null)
+        {
+            return;
+        }
+        
+        context.WorkoutExercises.Remove(workoutExercise);
+        await context.SaveChangesAsync();
+    }
 }

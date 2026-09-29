@@ -20,7 +20,7 @@ else
     <div class="routines-page">
         <h1 class="mb-4">@routine.Name</h1>
         
-        <div class="card mb-4">
+         <div class="card mb-4">
             <div class="list-group list-group-flush">
                 @foreach (var workoutex in routine.WorkoutExercises)
                 {
@@ -28,6 +28,7 @@ else
                         <span class="fw-semibold">@GetExerciseName(workoutex.ExerciseId)</span>
                         
                         <span class="ms-auto text-secondary"></span>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveExercise(workoutex.Id)">Delete</button>
                     </div>
                 }
                 @if (routine.WorkoutExercises.Count == 0)
@@ -51,7 +52,6 @@ else
         <a href="/routines" class="btn btn-link mt-3">Back</a>
     </div>
 }
-
 
 @code {
     
@@ -86,6 +86,12 @@ else
         selectedExerciseId = "";
 
 
+    }
+    
+    private async Task RemoveExercise(int workoutExerciseId)
+    {
+        await Repo.DeleteAsync(workoutExerciseId);
+        routine = await Repo.GetByIdAsync(Id);
     }
     
 

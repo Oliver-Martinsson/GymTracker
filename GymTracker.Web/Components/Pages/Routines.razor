@@ -33,14 +33,15 @@
         
         @foreach (var routine in routines)
         {
-            <a href="/routines/@routine.Id" class="text-decoration-none text-body">
-                <div class="card mb-3">
-                    <div class="card-body">
+            <div class="card mb-3">
+                <div class="card-body d-flex align-items-center">
+                    <a href="/routines/@routine.Id" class="text-decoration-none text-body flex-grow-1">
                         <h6 class="fw-semibold mb-1">@routine.Name</h6>
                         <p class="text-secondary small mb-0">@routine.WorkoutExercises.Count Exercises</p>
-                    </div>
+                    </a>
+                    <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteRoutine(routine.Id)">Delete</button>
                 </div>
-            </a>
+            </div>
         }
     }
 </div>
@@ -53,4 +54,11 @@
     {
         routines = await Repo.GetAllAsync();
     }
+
+    private async Task DeleteRoutine(int id)
+    {
+        await Repo.DeleteAsync(id);
+        routines = await Repo.GetAllAsync();
+    }
+    
 }
