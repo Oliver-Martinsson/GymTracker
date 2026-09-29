@@ -1,0 +1,98 @@
+﻿@page "/Routines/{Id:int}"
+@rendermode InteractiveServer
+@using GymTracker.Core.Models
+@using GymTracker.Core.Interfaces
+@inject IWorkoutRepository Repo
+@inject IExerciseService ExerciseService
+
+<h3>Routine</h3>
+
+@if (routine is null)
+{
+    <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="routines-page">
+        <h1 class="mb-4">@routine.Name</h1>
+        
+         <div class="card mb-4">
+            <div class="list-group list-group-flush">
+                @foreach (var workoutex in routine.WorkoutExercises)
+                {
+                    <div class="list-group-item d-flex align-items-center py-3">
+                        <span class="fw-semibold">@GetExerciseName(workoutex.ExerciseId)</span>
+                        
+                        <span class="ms-auto text-secondary"></span>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveExercise(workoutex.Id)">Delete</button>
+                    </div>
+                }
+                @if (routine.WorkoutExercises.Count == 0)
+                {
+                    <div class="list-group-item text-secondary">No excercise yet</div>
+                }
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <select @bind="selectedExerciseId" class="form-select">
+                <option value="">Choose an excercise...</option>
+                @foreach (var ex in allExercises)
+                {
+                    <option value="@ex.Id">@ex.Name</option>
+                }
+            </select>
+            <button class="btn btn-primary" @onclick="AddExercise">Add</button>
+        </div>
+        
+        <a href="/routines" class="btn btn-link mt-3">Back</a>
+    </div>
+}
+
+@code {
+    
+    [Parameter] public int  Id { get; set; }
+    
+    private Workout? routine;
+    private List<Exercise> allExercises = new();
+    private string selectedExerciseId = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        routine = await Repo.GetByIdAsync(Id);
+        allExercises = await ExerciseService.GetAllAsync();
+    }
+
+    private string GetExerciseName(string exerciseId)
+     => allExercises.FirstOrDefault (e => e.Id == exerciseId)?.Name ?? "Unknown";
+
+    private async Task AddExercise()
+    {
+        if (routine == null || string.IsNullOrEmpty(selectedExerciseId))
+            return;
+
+        routine.WorkoutExercises.Add(new WorkoutExercise
+        {
+            ExerciseId = selectedExerciseId,
+            Sets = 3,
+            Reps = 10
+        });
+
+        await Repo.UpdateAsync(routine);
+        selectedExerciseId = "";
+
+
+    }
+    
+    private async Task RemoveExercise(int workoutExerciseId)
+    {
+        await Repo.DeleteAsync(workoutExerciseId);
+        routine = await Repo.GetByIdAsync(Id);
+    }
+    
+
+}

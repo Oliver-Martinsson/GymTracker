@@ -7,7 +7,7 @@ using GymTracker.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -18,8 +18,7 @@ builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 builder.Services.AddScoped<IExerciseService, FakeExerciseService>();
 var app = builder.Build();
 
-// Create/update the SQLite database on startup by applying any pending migrations.
-// (Avoids needing `dotnet ef database update`, which Windows App Control blocks here.)
+
 using (var scope = app.Services.CreateScope())
 {
     var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<GymDbContext>>();
@@ -27,7 +26,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
