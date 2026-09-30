@@ -15,7 +15,8 @@ builder.Services.AddDbContextFactory<GymDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
-builder.Services.AddScoped<IExerciseService, FakeExerciseService>();
+builder.Services.AddHttpClient<IExerciseService, ExerciseService>(client =>
+    client.BaseAddress = new Uri("https://exercisedb-api-eta.vercel.app/"));
 var app = builder.Build();
 
 
