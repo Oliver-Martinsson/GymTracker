@@ -38,6 +38,25 @@ else
             </div>
         </div>
         
+        <select @bind="selectedBodyPart" @bind:after="SendFilter" class="form-select mb-2">
+            <option value="">All Muscle Groups</option>
+            @foreach (var bp in bodyParts)
+            {
+                <option value="@bp">@bp</option>
+            }
+        </select>
+        <select @bind="selectedEquipment" @bind:after ="SendFilter" class="form-select mb-2">
+            <option value="">All Equipment</option>
+            @foreach (var eq in equipment)
+            {
+                <option value="@eq">@eq</option>
+            }
+        </select>
+        
+        
+        
+        
+        
         <div class="d-flex gap-2">
             <select @bind="selectedExerciseId" class="form-select">
                 <option value="">Choose an excercise...</option>
@@ -54,6 +73,10 @@ else
 }
 
 @code {
+
+    private string selectedBodyPart = "";
+    private string selectedEquipment = "";
+    
     
     [Parameter] public int  Id { get; set; }
     
@@ -90,9 +113,23 @@ else
     
     private async Task RemoveExercise(int workoutExerciseId)
     {
-        await Repo.DeleteAsync(workoutExerciseId);
+        await Repo.RemoveExerciseAsync(workoutExerciseId);
         routine = await Repo.GetByIdAsync(Id);
     }
-    
 
-}
+
+    private readonly string[] bodyParts =
+    { "back", "chest", "shoulders", "upper arms", "lower arms", "upper legs", "lower legs", "waist", "neck", "cardio"};
+
+    private readonly string[] equipment =
+        {"barbell", "dumbbell", "cable", "body weight", "kettlebell", "smith machine", "leverage machine", "band", "resistance band", "ez barbell" };
+
+
+    private async Task SendFilter()
+    {
+        allExercises = await ExerciseService.FilterAsync(selectedBodyPart, selectedEquipment);
+        selectedExerciseId = "";
+    }
+
+
+};

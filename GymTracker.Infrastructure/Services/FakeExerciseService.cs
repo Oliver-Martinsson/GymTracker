@@ -19,4 +19,16 @@ public class FakeExerciseService : IExerciseService
 
     public Task<Exercise?> GetByIdAsync(string id)
         => Task.FromResult(_exercises.FirstOrDefault(e => e.Id == id));
+    
+    public Task<List<Exercise>> FilterAsync(string? bodyPart, string? equipment)
+    {
+        var result = _exercises.AsEnumerable();
+        if (!string.IsNullOrEmpty(bodyPart))
+            result = result.Where(e => e.BodyParts.Contains(bodyPart));
+        if (!string.IsNullOrEmpty(equipment))
+            result = result.Where(e => e.Equipments.Contains(equipment));
+        return Task.FromResult(result.ToList());
+    }
+    
+    
 }
