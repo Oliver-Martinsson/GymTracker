@@ -37,7 +37,7 @@ namespace GymTracker.Infrastructure.Test
 
             var savedWorkout = await context.Workouts.FirstOrDefaultAsync(w => w.Id == workout.Id);
 
-            Assert.NotNull(savedWorkout);
+            Assert.Equal("123",savedWorkout.Name);
             Assert.NotNull(savedWorkout.Name);
             Assert.NotEqual("Fel", savedWorkout.Name);
             Assert.IsType<string>(savedWorkout.Name);
