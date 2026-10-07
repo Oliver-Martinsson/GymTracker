@@ -1,0 +1,80 @@
+@page "/Session/{Id:int}"
+@using GymTracker.Core.Interfaces
+@rendermode InteractiveServer
+@inject IExerciseService ExerciseService
+@using GymTracker.Core.Models
+@using GymTracker.Infrastructure.Services
+@inject IWorkoutSessionRepository SessionRepo
+@inject NavigationManager Navigation
+
+@if (session is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h1 class="mb-4">@session.Workout?.Name</h1>
+    
+    @foreach (var group in session.Sets.GroupBy(s => s.ExerciseId))
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="fw-semibold">@GetExerciseName(group.Key)</h6>
+                
+                @foreach(var set in group.OrderBy(s => s.SetNumber))
+                {
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span>Set @set.SetNumber</span>
+                        
+                        <input type="number" class="form-control" style="width: 90px"
+                               @bind="set.Weight" @bind:after="() => SaveSet(set)"/>
+                        
+                        <input type="number" class="form-control" style="width: 90px"
+                               @bind="set.Reps" @bind:after="() => SaveSet(set)"/>
+                        
+                        <input type="checkbox" class="form-check-input m-0" style="height: 2.375rem; width: 2.375rem" 
+                               @bind="set.Completed" @bind:after="() => SaveSet(set)"/>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    <a href="/routines" class="btn btn-outline-success mt-3">Finish</a>
+    
+}
+
+
+
+
+
+@code {
+    
+    [Parameter] public int Id { get; set; }
+    
+    private WorkoutSession? session;
+    private Dictionary<string, string> exerciseNames = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        session = await SessionRepo.GetByIdAsync(Id);
+        await LoadNames();
+    }
+    private string GetExerciseName(string exerciseId)
+        => exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
+    
+    private async Task LoadNames()
+    {
+        if (session is  null)
+            return;
+        foreach (var set in session.Sets)
+        {
+            if (!exerciseNames.ContainsKey(set.ExerciseId))
+            {
+                var ex = await ExerciseService.GetByIdAsync(set.ExerciseId);
+                exerciseNames[set.ExerciseId] = ex.Name ?? "Unknown";
+            }
+        }
+    }
+ private async Task SaveSet(LoggedSet set)
+ => await SessionRepo.UpdateSetAsync(set);
+}

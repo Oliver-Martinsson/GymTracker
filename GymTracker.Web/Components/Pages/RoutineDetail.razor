@@ -5,6 +5,7 @@
 @inject IWorkoutRepository Repo
 @inject IExerciseService ExerciseService
 
+
 <h3>Routine</h3>
 
 @if (routine is null)
@@ -33,7 +34,7 @@ else
                 }
                 @if (routine.WorkoutExercises.Count == 0)
                 {
-                    <div class="list-group-item text-secondary">No excercise yet</div>
+                    <div class="list-group-item text-secondary">No exercise yet</div>
                 }
             </div>
         </div>
@@ -59,7 +60,7 @@ else
         
         <div class="d-flex gap-2">
             <select @bind="selectedExerciseId" class="form-select">
-                <option value="">Choose an excercise...</option>
+                <option value="">Choose an exercise...</option>
                 @foreach (var ex in allExercises)
                 {
                     <option value="@ex.Id">@ex.Name</option>
@@ -88,10 +89,11 @@ else
     {
         routine = await Repo.GetByIdAsync(Id);
         allExercises = await ExerciseService.GetAllAsync();
+        await LoadNames();
     }
 
     private string GetExerciseName(string exerciseId)
-     => allExercises.FirstOrDefault (e => e.Id == exerciseId)?.Name ?? "Unknown";
+     => exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
 
     private async Task AddExercise()
     {
@@ -107,7 +109,7 @@ else
 
         await Repo.UpdateAsync(routine);
         selectedExerciseId = "";
-
+        await LoadNames();
 
     }
     
@@ -117,7 +119,10 @@ else
         routine = await Repo.GetByIdAsync(Id);
     }
 
-
+    
+    private Dictionary<string, string> exerciseNames = new();
+    
+    
     private readonly string[] bodyParts =
     { "back", "chest", "shoulders", "upper arms", "lower arms", "upper legs", "lower legs", "waist", "neck", "cardio"};
 
@@ -129,7 +134,23 @@ else
     {
         allExercises = await ExerciseService.FilterAsync(selectedBodyPart, selectedEquipment);
         selectedExerciseId = "";
+        await LoadNames();
     }
+
+    private async Task LoadNames()
+    {
+        if (routine is  null)
+            return;
+        foreach (var we in routine.WorkoutExercises)
+        {
+            if (!exerciseNames.ContainsKey(we.ExerciseId))
+            {
+                var ex = await ExerciseService.GetByIdAsync(we.ExerciseId);
+                exerciseNames[we.ExerciseId] = ex.Name ?? "Unknown";
+            }
+        }
+    }
+    
 
 
 };
