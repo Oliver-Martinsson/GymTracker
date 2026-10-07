@@ -1,28 +1,53 @@
 ﻿@page "/"
+@using GymTracker.Core.Interfaces
+@using GymTracker.Core.Models
+@rendermode InteractiveServer
+@inject IWorkoutSessionRepository SessionRepo
 
 <PageTitle>Training Overview</PageTitle>
 
-
 <h1>Training Overview</h1>
-
 <h2>Welcome to GymTracker!</h2>
-<div class="row" data-bs-theme="dark">
-    <div class="col-sm-6 mb-3 mb-sm-0">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+
+<h4 class="mb-3">Your Completed Workouts</h4>
+
+@if (sessions is null)
+{
+    <p class="text-secondary">Loading...</p>
+}
+else if (sessions.Count == 0)
+{
+    <p class="text-secondary">No Completed Workouts Yet.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3" data-bs-theme="dark">
+        @foreach (var session in sessions)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@session.Workout?.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-secondary">@session.Date.ToString("ddd, MMM d yyyy")</h6>
+                        <p class="card-text mb-0">
+                            @session.Sets.Count sets &middot;
+                            @session.Sets.Sum(s => s.Reps) reps &middot;
+                            @session.Sets.Sum(s => s.Weight * s.Reps) Kg Volume
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
+        }
     </div>
-    <div class="col-sm-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-    </div>
-</div>
+} 
+
+@code
+{
+    private List<WorkoutSession>? sessions;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+            sessions = await SessionRepo.GetCompletedAsync();
+    }
+}

@@ -8,7 +8,7 @@ namespace GymTracker.Infrastructure.Repositories;
 public class WorkoutRepository : IWorkoutRepository
 {
     private readonly IDbContextFactory<GymDbContext> _contextFactory;
-
+    
     public WorkoutRepository(IDbContextFactory<GymDbContext> contextFactory)
     {
         _contextFactory = contextFactory;

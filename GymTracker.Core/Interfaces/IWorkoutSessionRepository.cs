@@ -8,5 +8,6 @@ public interface IWorkoutSessionRepository
     Task<WorkoutSession?> GetByIdAsync(int id);
     Task<List<WorkoutSession>> GetByWorkoutAsync(int workoutId);
     Task UpdateSetAsync(LoggedSet set);
+    Task<List<WorkoutSession>> GetCompletedAsync();
     Task DeleteAsync(int id);
 }
