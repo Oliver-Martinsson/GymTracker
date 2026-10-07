@@ -64,7 +64,7 @@
 
     private async Task DeleteRoutine(int id)
     {
-        await Repo.DeleteAsync(id);
+        await Repo.ArchiveAsync(id);
         routines = await Repo.GetAllAsync();
     }
 

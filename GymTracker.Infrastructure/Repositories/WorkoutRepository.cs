@@ -18,6 +18,7 @@ public class WorkoutRepository : IWorkoutRepository
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Workouts
+            .Where(w => !w.IsArchived)
             .Include(w => w.WorkoutExercises)
             .ToListAsync();
     }
@@ -27,7 +28,7 @@ public class WorkoutRepository : IWorkoutRepository
         await using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Workouts
             .Include(w => w.WorkoutExercises)
-            .FirstOrDefaultAsync(w => w.Id == id);
+            .FirstOrDefaultAsync(w => w.Id == id && !w.IsArchived);
     }
 
     public async Task AddAsync(Workout workout)
@@ -44,7 +45,7 @@ public class WorkoutRepository : IWorkoutRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task ArchiveAsync(int id)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var workout = await context.Workouts.FindAsync(id);
@@ -53,7 +54,7 @@ public class WorkoutRepository : IWorkoutRepository
             return;
         }
 
-        context.Workouts.Remove(workout);
+        workout.IsArchived = true;
         await context.SaveChangesAsync();
     }
 
