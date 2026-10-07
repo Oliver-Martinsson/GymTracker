@@ -63,6 +63,16 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
             .OrderByDescending(s => s.Date)
             .ToListAsync();
     }
+    public async Task<List<WorkoutSession>> GetCompletedAsync()
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        return await context.WorkoutSessions
+            .Include(s => s.Workout)
+            .Include(s => s.Sets)
+            .Where(s => s.Sets.Any() && s.Sets.All(set => set.Completed ))
+            .OrderByDescending(s => s.Date)
+            .ToListAsync();
+    }
 
     public async Task UpdateSetAsync(LoggedSet set)
     {
@@ -91,4 +101,7 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         context.WorkoutSessions.Remove(session);
         await context.SaveChangesAsync();
     }
+    
+    
+    
 }
