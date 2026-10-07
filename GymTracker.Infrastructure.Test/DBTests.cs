@@ -10,15 +10,15 @@ namespace GymTracker.Infrastructure.Test
 {
     public class DBTests
     {
-        
-         private GymDbContext CreateDbContext()
-         {
+
+        private GymDbContext CreateDbContext()
+        {
             var options = new DbContextOptionsBuilder<GymDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-                return new GymDbContext(options);
-         }
+            return new GymDbContext(options);
+        }
 
         [Fact]
         public async Task CheckThatDatabaseCanAddAndRetriveData()
@@ -36,11 +36,13 @@ namespace GymTracker.Infrastructure.Test
 
             var savedWorkout = await context.Workouts.FirstOrDefaultAsync(w => w.Id == workout.Id);
 
-            Assert.Equal("123",savedWorkout.Name);
+            Assert.Equal("test", savedWorkout.Name);
             Assert.NotNull(savedWorkout.Name);
             Assert.NotEqual("Fel", savedWorkout.Name);
             Assert.IsType<string>(savedWorkout.Name);
+            Assert.NotEmpty(savedWorkout.Name);
         }
-    
+
+        
     }
 }
