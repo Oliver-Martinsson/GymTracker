@@ -20,7 +20,6 @@ namespace GymTracker.Infrastructure.Test
                 return new GymDbContext(options);
          }
 
-
         [Fact]
         public async Task CheckThatDatabaseCanAddAndRetriveData()
         {
