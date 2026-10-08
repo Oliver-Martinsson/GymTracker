@@ -24,9 +24,17 @@ public class ExerciseService : IExerciseService
         var response = await _http.GetFromJsonAsync<ExerciseResponse>($"api/v1/exercises/{id}");
         return response?.Data;
     }
-    
-    
-    
+
+
+    public async Task<List<Exercise>> SearchAsync(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query)) return await GetAllAsync();
+        var url = $"api/v1/exercises/search?{Uri.EscapeDataString(query)}&limit=100";
+        var response = await _http.GetFromJsonAsync<ApiResponse>(url);
+        return response?.Data ?? new List<Exercise>();
+    }
+
+
     public async Task<List<Exercise>> FilterAsync(string? bodyPart, string? equipment)
     {
         var query = new List<string>();

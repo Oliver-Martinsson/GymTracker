@@ -4,7 +4,7 @@
 @using GymTracker.Core.Interfaces
 @inject IWorkoutRepository Repo
 @inject IExerciseService ExerciseService
-
+@inject NavigationManager Nav
 
 <h3>Routine</h3>
 
@@ -39,34 +39,9 @@ else
             </div>
         </div>
         
-        <select @bind="selectedBodyPart" @bind:after="SendFilter" class="form-select mb-2">
-            <option value="">All Muscle Groups</option>
-            @foreach (var bp in bodyParts)
-            {
-                <option value="@bp">@bp</option>
-            }
-        </select>
-        <select @bind="selectedEquipment" @bind:after ="SendFilter" class="form-select mb-2">
-            <option value="">All Equipment</option>
-            @foreach (var eq in equipment)
-            {
-                <option value="@eq">@eq</option>
-            }
-        </select>
-        
-        
-        
-        
-        
-        <div class="d-flex gap-2">
-            <select @bind="selectedExerciseId" class="form-select">
-                <option value="">Choose an exercise...</option>
-                @foreach (var ex in allExercises)
-                {
-                    <option value="@ex.Id">@ex.Name</option>
-                }
-            </select>
-            <button class="btn btn-primary" @onclick="AddExercise">Add</button>
+        <div class="d-flex justify-content-center my-4">
+            <button class="btn btn-primary btn-lg" 
+                    @onclick="@(() => Nav.NavigateTo($"/AddExercise/{Id}/add-exercise"))"> + Add Exercise</button>
         </div>
         
         <a href="/routines" class="btn btn-link mt-3">Back</a>
@@ -153,4 +128,4 @@ else
     
 
 
-};
+}
