@@ -3,6 +3,8 @@
 @rendermode InteractiveServer
 @inject IExerciseService ExerciseService
 @using GymTracker.Core.Models
+@using GymTracker.Core.Calculations
+@using GymTracker.Infrastructure.Services
 @inject IWorkoutSessionRepository SessionRepo
 @inject NavigationManager Navigation
 
@@ -33,6 +35,7 @@ else
                         
                         <input type="checkbox" class="form-check-input m-0" style="height: 2.375rem; width: 2.375rem" 
                                @bind="set.Completed" @bind:after="() => SaveSet(set)"/>
+                        <span class="text-muted">1RM: @OneRepMaxCalculator.Epley(set.Weight, set.Reps).ToString("0.#")kg</span>
                     </div>
                 }
             </div>
