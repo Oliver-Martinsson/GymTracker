@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/Tests/">
-    <Project Path="GymTracker.Infrastructure.Test/GymTracker.Test.csproj" />
+    <Project Path="GymTracker.Test/GymTracker.Test.csproj" />
   </Folder>
   <Project Path="GymTracker.Core/GymTracker.Core.csproj" />
   <Project Path="GymTracker.Infrastructure/GymTracker.Infrastructure.csproj" />
