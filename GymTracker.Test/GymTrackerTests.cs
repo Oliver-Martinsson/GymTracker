@@ -54,7 +54,7 @@ namespace GymTracker.Test
         }
 
         [Fact]
-        public async Task AddWotkout_WithoutName_ThrowsDbUpdateException()
+        public async Task AddWorkout_WithoutName_ThrowsDbUpdateException()
         {
             //Arrange
             using var context = CreateDbContext();
