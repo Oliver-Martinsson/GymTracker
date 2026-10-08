@@ -14,6 +14,19 @@ public class FakeExerciseService : IExerciseService
         new Exercise { Id = "5", Name = "Overhead Press", BodyParts = new() { "Shoulders" },  TargetMuscles = new() { "Delts" },     Equipments = new() { "Barbell" } },
     };
 
+    public Task<List<Exercise>> SearchAsync(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return GetAllAsync();
+        
+        var result = _exercises
+            .Where(e => e.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        return Task.FromResult(result);
+        
+    }
+
+
     public Task<List<Exercise>> GetAllAsync()
         => Task.FromResult(_exercises);
 

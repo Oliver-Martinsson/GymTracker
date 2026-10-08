@@ -8,4 +8,7 @@ public interface IExerciseService
     Task<Exercise?> GetByIdAsync(string id);
     
     Task<List<Exercise>> FilterAsync(string? bodyPart, string? equipment);
+    
+    Task<List<Exercise>> SearchAsync (string query);
+    
 }
