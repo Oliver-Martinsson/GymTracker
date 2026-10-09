@@ -29,7 +29,7 @@ public class ExerciseService : IExerciseService
     public async Task<List<Exercise>> SearchAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query)) return await GetAllAsync();
-        var url = $"api/v1/exercises/search?{Uri.EscapeDataString(query)}&limit=100";
+        var url = $"api/v1/exercises/search?q={Uri.EscapeDataString(query)}&limit=100";
         var response = await _http.GetFromJsonAsync<ApiResponse>(url);
         return response?.Data ?? new List<Exercise>();
     }
