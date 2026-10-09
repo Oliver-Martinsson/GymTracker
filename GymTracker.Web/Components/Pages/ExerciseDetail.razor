@@ -1,0 +1,92 @@
+@page "/Exercises/{Id}"
+@rendermode InteractiveServer
+@using GymTracker.Core.Interfaces
+@using GymTracker.Core.Models;
+@inject IExerciseService ExerciseService
+@inject IJSRuntime JS
+
+<h3>@(exercise?.Name ?? "Exercise")</h3>
+
+
+@if (loading)
+{
+    <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else if (exercise is null)
+{
+    <div class="text-center py-5">
+        <p class="text-secondary">Exercise not found</p>
+        <button class="btn btn-link" @onclick="GoBack">Back</button>
+    </div>
+    
+}
+else
+{
+    <div class="routeines-page">
+        <button class="btn btn-link px-0 mb-2" @onclick="GoBack">&larr;Back</button>
+        
+        <h1 class="mb-3 text-capitalize">@exercise.Name</h1>
+        
+        @if (!string.IsNullOrEmpty(exercise.GifUrl))
+        {
+            <img src="@exercise.GifUrl" alt="@exercise.Name"
+                 class="img-fluid rounded  mb-4" style="max-width: 100%;" />
+        }
+        @if (exercise.TargetMuscles.Any() || exercise.Equipments.Any())
+        {
+            <div class="mb-4">
+                @foreach (var m in exercise.TargetMuscles)
+                {
+                    <span class="badge bg-primary me-1 mb-1 text-capitalize">@m</span>
+                }
+                @foreach (var m in exercise.SecondaryMuscles)
+                {
+                    <span class="badge bg-secondary me-1 mb-1 text-capitalize">@m</span>
+                }
+                @foreach (var e in exercise.Equipments)
+                {
+                    <span class="badge bg-dark me-1 mb-1 text-capitalize">@e</span>
+                }
+                @foreach (var b in exercise.BodyParts)
+                {
+                    <span class="badge bg-dark me-1 mb-1 text-capitalize">@b</span>   
+                }
+            </div>
+        }
+        @if (exercise.Instructions.Any())
+        {
+            <h5 class="mb-2">Instructions</h5>
+            <ol class="ps-3">
+                @foreach (var step in exercise.Instructions)
+                {
+                    <li class="mb-2">@CleanStep(step)</li>
+                }
+            </ol>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+    private Exercise? exercise;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        exercise = await ExerciseService.GetByIdAsync(Id);
+        loading = false;
+    }
+    private async Task GoBack()
+    => await JS.InvokeVoidAsync("history.back");
+
+    private static string CleanStep(string step)
+    {
+        var idx = step.IndexOf(' ');
+        return step.StartsWith("Step:") && idx > 0 ?  step[(idx + 1)..] : step;
+    }
+    
+}
