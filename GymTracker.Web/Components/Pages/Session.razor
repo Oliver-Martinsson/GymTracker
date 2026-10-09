@@ -24,8 +24,7 @@ else
                     <h6 class="fw-semibold">@GetExerciseName(group.Key)</h6>
                     @if (group.Any(s => s.Completed))
                     {
-                        <span
-                            class="text-muted">1RM: @group.Where(s => s.Completed).Max(s => OneRepMaxCalculator.Epley(s.Weight, s.Reps)).ToString("0.#") kg</span>
+                        <span class="text-muted">1RM: @group.Where(s => s.Completed).Max(s => OneRepMaxCalculator.Epley(s.Weight, s.Reps)).ToString("0.#") kg</span>
                     }
                 </div>
 
