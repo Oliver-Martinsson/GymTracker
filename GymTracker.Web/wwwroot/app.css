@@ -3,6 +3,11 @@ html, body {
 
 }
 
+
+
+
+
+
 [data-bs-theme="dark"] {
     --gt-primary: #7B8CFF;
     --gt-primary-hover: #6474F0;
