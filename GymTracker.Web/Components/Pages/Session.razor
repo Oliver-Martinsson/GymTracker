@@ -73,7 +73,7 @@ else
             if (!exerciseNames.ContainsKey(set.ExerciseId))
             {
                 var ex = await ExerciseService.GetByIdAsync(set.ExerciseId);
-                exerciseNames[set.ExerciseId] = ex.Name ?? "Unknown";
+                exerciseNames[set.ExerciseId] = ex?.Name ?? "Unknown";
             }
         }
     }

@@ -69,24 +69,6 @@ else
 
     private string GetExerciseName(string exerciseId)
      => exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
-
-    private async Task AddExercise()
-    {
-        if (routine == null || string.IsNullOrEmpty(selectedExerciseId))
-            return;
-
-        routine.WorkoutExercises.Add(new WorkoutExercise
-        {
-            ExerciseId = selectedExerciseId,
-            Sets = 3,
-            Reps = 10
-        });
-
-        await Repo.UpdateAsync(routine);
-        selectedExerciseId = "";
-        await LoadNames();
-
-    }
     
     private async Task RemoveExercise(int workoutExerciseId)
     {
@@ -96,17 +78,6 @@ else
 
     
     private Dictionary<string, string> exerciseNames = new();
-    
-    
-    
-
-
-    private async Task SendFilter()
-    {
-        allExercises = await ExerciseService.FilterAsync(selectedBodyPart, selectedEquipment);
-        selectedExerciseId = "";
-        await LoadNames();
-    }
 
     private async Task LoadNames()
     {
@@ -117,7 +88,7 @@ else
             if (!exerciseNames.ContainsKey(we.ExerciseId))
             {
                 var ex = await ExerciseService.GetByIdAsync(we.ExerciseId);
-                exerciseNames[we.ExerciseId] = ex.Name ?? "Unknown";
+                exerciseNames[we.ExerciseId] = ex?.Name ?? "Unknown";
             }
         }
     }
