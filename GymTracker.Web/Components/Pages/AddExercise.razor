@@ -14,15 +14,21 @@
        @bind="searchTerm" @bind:event="oninput" @bind:after="RunSearch" />
 
 <div class="d-flex gap-2 mb-3">
-       <button class="btn btn-outline-secondary flex-fill" @onclick="OpenEquipment">Equipment</button>
-       <button class="btn btn-outline-secondary flex-fill" @onclick="OpenMuscles">Muscles</button>
+       <button class="btn flex-fill @(string.IsNullOrEmpty(selectedEquipment) ? "btn-outline-secondary" : "btn-secondary")"
+               @onclick="OpenEquipment">
+              @(string.IsNullOrEmpty(selectedEquipment) ? "Equipment" : selectedEquipment)
+       </button>
+       <button class="btn flex-fill @(string.IsNullOrEmpty(selectedBodyPart) ? "btn-outline-secondary" : "btn-secondary")"
+               @onclick="OpenMuscles">
+              @(string.IsNullOrEmpty(selectedBodyPart) ? "Muscles" : selectedBodyPart)
+       </button>
 </div>
 
 <div class="list-group">
        @foreach (var ex in results)
        {
               <div class="list-group-item d-flex align-items-center py-3">
-                     <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibold p-0"
+                     <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibo @(string.IsNullOrEmpty(selectedEquipment) ? "Equipment" : selectedEquipment)</button>ld p-0"
                              @onclick="() => Toggle(ex.Id)">
                             @ex.Name
                             @if (selectedIds.Contains(ex.Id))
@@ -48,9 +54,39 @@
               </button>
        </div>
 }
+
+@if (showEquipment || showMuscles)
+{
+       <div class="offcanvas-backdrop fade show" @onclick="CloseSheets"></div>
+       <div class="position-fixed start-0 end-0 bottom-0 bg-body rounded-top shadow"
+            style="z-index: 1050; max-height: 70vh; overflow-y: auto;">
+              <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+                     <h6 class="m-0">@(showEquipment ? "Choose Equipment" : "Choose Muscle Group")</h6>
+                     <button class="btn-close" @onclick="CloseSheets"></button>
+              </div>
+              <div class="list-group list-group-flush">
+                     <button class="list-group-item list-group-item-action py-3" @onclick="() => SelectOption(string.Empty)">All</button>
+                     @foreach (var opt in (showEquipment ? equipment : bodyParts))
+                     {
+                            <button class="list-group-item list-group-item-action py-3 text-capitalize" @onclick="() => SelectOption(opt)">@opt</button>
+                     }
+              </div>
+       </div>
+       
+}
 @code {
     [Parameter] public int Id { get; set; }
     private HashSet<string> selectedIds = new();
+    private string selectedBodyPart = "";
+    private string selectedEquipment = "";
+    private bool showEquipment;
+    private bool showMuscles;
+    
+    private readonly string[] bodyParts =
+           { "back", "chest", "shoulders", "upper arms", "lower arms", "upper legs", "lower legs", "waist", "neck", "cardio"};
+
+    private readonly string[] equipment =
+           {"barbell", "dumbbell", "cable", "body weight", "kettlebell", "smith machine", "leverage machine", "band", "resistance band", "ez barbell" };
 
     private void Toggle(string exerciseId)
     {
@@ -87,10 +123,41 @@
     }
     private async Task RunSearch()
     {
+           selectedBodyPart = "";
+           selectedEquipment = "";
            results = await ExerciseService.SearchAsync(searchTerm);
     }
 
-    private void OpenEquipment() { }
-    private void OpenMuscles() { }
+    private void OpenEquipment() { showEquipment = true; showMuscles = false; }
+    private void OpenMuscles()   { showMuscles = true;  showEquipment = false; }
+    private void CloseSheets()   { showEquipment = false; showMuscles = false; }
+
+    private async Task SelectOption(string value)
+    {
+           if (showEquipment)
+           {
+                  selectedEquipment = value;
+           }
+           else
+           {
+                  selectedBodyPart = value;
+           }
+           
+           CloseSheets();
+           searchTerm = "";
+           await ApplyFilter();
+    }
+
+    private async Task ApplyFilter()
+    {
+           if (string.IsNullOrEmpty(selectedBodyPart) && string.IsNullOrEmpty(selectedEquipment))
+           {
+                  results = await ExerciseService.GetAllAsync();
+           }
+           else 
+           {
+                  results = await ExerciseService.FilterAsync(selectedBodyPart, selectedEquipment); 
+           }
+    }
 
 }
