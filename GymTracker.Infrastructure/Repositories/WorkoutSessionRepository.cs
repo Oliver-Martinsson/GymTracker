@@ -1,5 +1,6 @@
 using GymTracker.Core.Interfaces;
 using GymTracker.Core.Models;
+using GymTracker.Core.Factories;
 using GymTracker.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,27 +21,9 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         var workout = await context.Workouts
             .Include(w => w.WorkoutExercises)
             .FirstAsync(w => w.Id == workoutId);
-
-        var session = new WorkoutSession
-        {
-            WorkoutId = workoutId,
-            Date = DateTime.Now
-        };
-
-        foreach (var we in workout.WorkoutExercises)
-        {
-            for (var i = 1; i <= we.Sets; i++)
-            {
-                session.Sets.Add(new LoggedSet
-                {
-                    ExerciseId = we.ExerciseId,
-                    SetNumber = i,
-                    Weight = we.Weight,
-                    Reps = we.Reps
-                });
-            }
-        }
-
+        
+        var session = WorkoutSessionFactory.CreateFrom(workout, DateTime.Now);
+        
         context.WorkoutSessions.Add(session);
         await context.SaveChangesAsync();
         return session;

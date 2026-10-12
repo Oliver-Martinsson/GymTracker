@@ -1,6 +1,7 @@
 ﻿using GymTracker.Infrastructure.Data;
 using GymTracker.Infrastructure.Repositories;
 using GymTracker.Core.Models;
+using GymTracker.Core.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using System.Linq;
