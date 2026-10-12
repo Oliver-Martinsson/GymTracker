@@ -11,18 +11,18 @@
 
 <h4 class="mb-3">Your Completed Workouts</h4>
 
-@if (sessions is null)
+@if (_sessions is null)
 {
     <p class="text-secondary">Loading...</p>
 }
-else if (sessions.Count == 0)
+else if (_sessions.Count == 0)
 {
     <p class="text-secondary">No Completed Workouts Yet.</p>
 }
 else
 {
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3" data-bs-theme="dark">
-        @foreach (var session in sessions)
+        @foreach (var session in _sessions)
         {
             <div class="col">
                 <div class="card h-100">
@@ -43,11 +43,11 @@ else
 
 @code
 {
-    private List<WorkoutSession>? sessions;
+    private List<WorkoutSession>? _sessions;
 
 
     protected override async Task OnInitializedAsync()
     {
-            sessions = await SessionRepo.GetCompletedAsync();
+            _sessions = await SessionRepo.GetCompletedAsync();
     }
 }

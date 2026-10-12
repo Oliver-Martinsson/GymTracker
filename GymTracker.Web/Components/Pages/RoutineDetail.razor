@@ -8,7 +8,7 @@
 
 <h3>Routine</h3>
 
-@if (routine is null)
+@if (_routine is null)
 {
     <div class="d-flex justify-content-center py-5">
         <div class="spinner-border text-primary" role="status">
@@ -19,11 +19,11 @@
 else
 {
     <div class="routines-page">
-        <h1 class="mb-4">@routine.Name</h1>
+        <h1 class="mb-4">@_routine.Name</h1>
         
          <div class="card mb-4">
             <div class="list-group list-group-flush">
-                @foreach (var workoutex in routine.WorkoutExercises)
+                @foreach (var workoutex in _routine.WorkoutExercises)
                 {
                     <div class="list-group-item d-flex align-items-center py-3">
                         <span class="fw-semibold">@GetExerciseName(workoutex.ExerciseId)</span>
@@ -32,7 +32,7 @@ else
                         <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveExercise(workoutex.Id)">Delete</button>
                     </div>
                 }
-                @if (routine.WorkoutExercises.Count == 0)
+                @if (_routine.WorkoutExercises.Count == 0)
                 {
                     <div class="list-group-item text-secondary">No exercise yet</div>
                 }
@@ -50,45 +50,41 @@ else
 
 @code {
 
-    private string selectedBodyPart = "";
-    private string selectedEquipment = "";
     
     
     [Parameter] public int  Id { get; set; }
     
-    private Workout? routine;
-    private List<Exercise> allExercises = new();
-    private string selectedExerciseId = "";
+    private Workout? _routine;
 
     protected override async Task OnInitializedAsync()
     {
-        routine = await Repo.GetByIdAsync(Id);
-        allExercises = await ExerciseService.GetAllAsync();
+        _routine = await Repo.GetByIdAsync(Id);
+        
         await LoadNames();
     }
 
     private string GetExerciseName(string exerciseId)
-     => exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
+     => _exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
     
     private async Task RemoveExercise(int workoutExerciseId)
     {
         await Repo.RemoveExerciseAsync(workoutExerciseId);
-        routine = await Repo.GetByIdAsync(Id);
+        _routine = await Repo.GetByIdAsync(Id);
     }
 
     
-    private Dictionary<string, string> exerciseNames = new();
+    private readonly Dictionary<string, string> _exerciseNames = new();
 
     private async Task LoadNames()
     {
-        if (routine is  null)
+        if (_routine is  null)
             return;
-        foreach (var we in routine.WorkoutExercises)
+        foreach (var we in _routine.WorkoutExercises)
         {
-            if (!exerciseNames.ContainsKey(we.ExerciseId))
+            if (!_exerciseNames.ContainsKey(we.ExerciseId))
             {
                 var ex = await ExerciseService.GetByIdAsync(we.ExerciseId);
-                exerciseNames[we.ExerciseId] = ex?.Name ?? "Unknown";
+                _exerciseNames[we.ExerciseId] = ex?.Name ?? "Unknown";
             }
         }
     }
