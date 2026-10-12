@@ -11,27 +11,27 @@
 
 <input class="form-control form-control-lg mb-3"
        placeholder="Search exercise..."
-       @bind="searchTerm" @bind:event="oninput" @bind:after="RunSearch" />
+       @bind="_searchTerm" @bind:event="oninput" @bind:after="RunSearch" />
 
 <div class="d-flex gap-2 mb-3">
-       <button class="btn flex-fill @(string.IsNullOrEmpty(selectedEquipment) ? "btn-outline-secondary" : "btn-secondary")"
+       <button class="btn flex-fill @(string.IsNullOrEmpty(_selectedEquipment) ? "btn-outline-secondary" : "btn-secondary")"
                @onclick="OpenEquipment">
-              @(string.IsNullOrEmpty(selectedEquipment) ? "Equipment" : selectedEquipment)
+              @(string.IsNullOrEmpty(_selectedEquipment) ? "Equipment" : _selectedEquipment)
        </button>
-       <button class="btn flex-fill @(string.IsNullOrEmpty(selectedBodyPart) ? "btn-outline-secondary" : "btn-secondary")"
+       <button class="btn flex-fill @(string.IsNullOrEmpty(_selectedBodyPart) ? "btn-outline-secondary" : "btn-secondary")"
                @onclick="OpenMuscles">
-              @(string.IsNullOrEmpty(selectedBodyPart) ? "Muscles" : selectedBodyPart)
+              @(string.IsNullOrEmpty(_selectedBodyPart) ? "Muscles" : _selectedBodyPart)
        </button>
 </div>
 
 <div class="list-group">
-       @foreach (var ex in results)
+       @foreach (var ex in _results)
        {
               <div class="list-group-item d-flex align-items-center py-3">
-                     <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibo @(string.IsNullOrEmpty(selectedEquipment) ? "Equipment" : selectedEquipment)</button>ld p-0"
+                     <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibo @(string.IsNullOrEmpty(_selectedEquipment) ? "Equipment" : _selectedEquipment)</button>ld p-0"
                              @onclick="() => Toggle(ex.Id)">
                             @ex.Name
-                            @if (selectedIds.Contains(ex.Id))
+                            @if (_selectedIds.Contains(ex.Id))
                             {
                                    <span class="text-success ms-2">✓</span>
                             }
@@ -41,32 +41,32 @@
                      </a>
               </div>
        }
-       @if (results.Count == 0)
+       @if (_results.Count == 0)
        {
        <div class="list-group-item text-secondary">No Exercises Found</div>
        }
 </div>
-@if (selectedIds.Count > 0)
+@if (_selectedIds.Count > 0)
 {
        <div class="position-fixed start-0 end-0 p-3 bg-body border-top" style="bottom: 2rem;">
               <button class="btn btn-primary btn-lg w-100" @onclick="Save">
-                     Add @selectedIds.Count exercise@(selectedIds.Count == 1 ? "" : "s")
+                     Add @_selectedIds.Count exercise@(_selectedIds.Count == 1 ? "" : "s")
               </button>
        </div>
 }
 
-@if (showEquipment || showMuscles)
+@if (_showEquipment || _showMuscles)
 {
        <div class="offcanvas-backdrop fade show" @onclick="CloseSheets"></div>
        <div class="position-fixed start-0 end-0 bottom-0 bg-body rounded-top shadow"
             style="z-index: 1050; max-height: 70vh; overflow-y: auto;">
               <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
-                     <h6 class="m-0">@(showEquipment ? "Choose Equipment" : "Choose Muscle Group")</h6>
+                     <h6 class="m-0">@(_showEquipment ? "Choose Equipment" : "Choose Muscle Group")</h6>
                      <button class="btn-close" @onclick="CloseSheets"></button>
               </div>
               <div class="list-group list-group-flush">
                      <button class="list-group-item list-group-item-action py-3" @onclick="() => SelectOption(string.Empty)">All</button>
-                     @foreach (var opt in (showEquipment ? equipment : bodyParts))
+                     @foreach (var opt in (_showEquipment ? _equipment : _bodyParts))
                      {
                             <button class="list-group-item list-group-item-action py-3 text-capitalize" @onclick="() => SelectOption(opt)">@opt</button>
                      }
@@ -76,38 +76,38 @@
 }
 @code {
     [Parameter] public int Id { get; set; }
-    private HashSet<string> selectedIds = new();
-    private string selectedBodyPart = "";
-    private string selectedEquipment = "";
-    private bool showEquipment;
-    private bool showMuscles;
+    private readonly HashSet<string> _selectedIds = new();
+    private string _selectedBodyPart = "";
+    private string _selectedEquipment = "";
+    private bool _showEquipment;
+    private bool _showMuscles;
     
-    private readonly string[] bodyParts =
-           { "back", "chest", "shoulders", "upper arms", "lower arms", "upper legs", "lower legs", "waist", "neck", "cardio"};
+    private readonly string[] _bodyParts =
+           [ "back", "chest", "shoulders", "upper arms", "lower arms", "upper legs", "lower legs", "waist", "neck", "cardio"];
 
-    private readonly string[] equipment =
-           {"barbell", "dumbbell", "cable", "body weight", "kettlebell", "smith machine", "leverage machine", "band", "resistance band", "ez barbell" };
+    private readonly string[] _equipment =
+           ["barbell", "dumbbell", "cable", "body weight", "kettlebell", "smith machine", "leverage machine", "band", "resistance band", "ez barbell" ];
 
     private void Toggle(string exerciseId)
     {
-           if (!selectedIds.Add(exerciseId)) 
-                  selectedIds.Remove(exerciseId);
+           if (!_selectedIds.Add(exerciseId)) 
+                  _selectedIds.Remove(exerciseId);
     }
 
-    private string searchTerm = "";
-    private List<Exercise> results = new();
+    private string _searchTerm = "";
+    private List<Exercise> _results = new();
     protected override async Task OnInitializedAsync()
     {
-           results = await ExerciseService.GetAllAsync();
+           _results = await ExerciseService.GetAllAsync();
     }
 
     private async Task Save()
     {
-           if (selectedIds.Count == 0) return;
+           if (_selectedIds.Count == 0) return;
            var routine = await Repo.GetByIdAsync(Id);
            if (routine is null) return;
 
-           foreach (var exerciseId in selectedIds)
+           foreach (var exerciseId in _selectedIds)
            {
                   routine.WorkoutExercises.Add(new WorkoutExercise
                   {
@@ -123,40 +123,40 @@
     }
     private async Task RunSearch()
     {
-           selectedBodyPart = "";
-           selectedEquipment = "";
-           results = await ExerciseService.SearchAsync(searchTerm);
+           _selectedBodyPart = "";
+           _selectedEquipment = "";
+           _results = await ExerciseService.SearchAsync(_searchTerm);
     }
 
-    private void OpenEquipment() { showEquipment = true; showMuscles = false; }
-    private void OpenMuscles()   { showMuscles = true;  showEquipment = false; }
-    private void CloseSheets()   { showEquipment = false; showMuscles = false; }
+    private void OpenEquipment() { _showEquipment = true; _showMuscles = false; }
+    private void OpenMuscles()   { _showMuscles = true;  _showEquipment = false; }
+    private void CloseSheets()   { _showEquipment = false; _showMuscles = false; }
 
     private async Task SelectOption(string value)
     {
-           if (showEquipment)
+           if (_showEquipment)
            {
-                  selectedEquipment = value;
+                  _selectedEquipment = value;
            }
            else
            {
-                  selectedBodyPart = value;
+                  _selectedBodyPart = value;
            }
            
            CloseSheets();
-           searchTerm = "";
+           _searchTerm = "";
            await ApplyFilter();
     }
 
     private async Task ApplyFilter()
     {
-           if (string.IsNullOrEmpty(selectedBodyPart) && string.IsNullOrEmpty(selectedEquipment))
+           if (string.IsNullOrEmpty(_selectedBodyPart) && string.IsNullOrEmpty(_selectedEquipment))
            {
-                  results = await ExerciseService.GetAllAsync();
+                  _results = await ExerciseService.GetAllAsync();
            }
            else 
            {
-                  results = await ExerciseService.FilterAsync(selectedBodyPart, selectedEquipment); 
+                  _results = await ExerciseService.FilterAsync(_selectedBodyPart, _selectedEquipment); 
            }
     }
 

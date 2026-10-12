@@ -14,10 +14,10 @@
 <div class="routines-page">
     <h1 class="mb-4">New Routines</h1>
     
-    <EditForm Model="newRoutine" OnValidSubmit="Save">
+    <EditForm Model="_newRoutine" OnValidSubmit="Save">
         <div class="mb-3">
             <label class="form-label">Routine Name</label>
-            <InputText @bind-Value="newRoutine.Name" class="form-control" placeholder="e.g Push Day"/>
+            <InputText @bind-Value="_newRoutine.Name" class="form-control" placeholder="e.g Push Day"/>
         </div>
         <button type="submit" class="btn btn-primary">save</button>
         <a href="/routines" class="btn btn-link">Cancel</a>
@@ -26,14 +26,14 @@
 
 
 @code {
-    private Workout newRoutine = new();
+    private readonly Workout _newRoutine = new();
 
     private async Task Save()
     {
-        if (string.IsNullOrEmpty(newRoutine.Name))
+        if (string.IsNullOrEmpty(_newRoutine.Name))
             return;
         
-        await Repo.AddAsync(newRoutine);
+        await Repo.AddAsync(_newRoutine);
         Nav.NavigateTo("/routines");
     }
 }

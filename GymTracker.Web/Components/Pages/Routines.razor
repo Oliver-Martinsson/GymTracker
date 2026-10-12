@@ -22,18 +22,18 @@
         </div>
     </div>
     
-    @if (routines is null)
+    @if (_routines is null)
     {
         <p class="text-secondary">Loading...</p>
     }
-    else if (routines.Count == 0)
+    else if (_routines.Count == 0)
     {
         <p class="text-secondary">No Routines Yet.</p>
     }
     else
     {
         
-        @foreach (var routine in routines)
+        @foreach (var routine in _routines)
         {
             <div class="card mb-3">
                 <div class="card-body d-flex align-items-center">
@@ -55,17 +55,17 @@
 
 @code
 {
-    private List<Workout>? routines;
+    private List<Workout>? _routines;
 
     protected override async Task OnInitializedAsync()
     {
-        routines = await Repo.GetAllAsync();
+        _routines = await Repo.GetAllAsync();
     }
 
     private async Task DeleteRoutine(int id)
     {
         await Repo.ArchiveAsync(id);
-        routines = await Repo.GetAllAsync();
+        _routines = await Repo.GetAllAsync();
     }
 
 

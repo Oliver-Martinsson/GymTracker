@@ -4,19 +4,18 @@
 @inject IExerciseService ExerciseService
 @using GymTracker.Core.Models
 @using GymTracker.Core.Calculations
-@using GymTracker.Infrastructure.Services
 @inject IWorkoutSessionRepository SessionRepo
-@inject NavigationManager Navigation
+@inject NavigationManager Nav
 
-@if (session is null)
+@if (_session is null)
 {
     <p>Loading...</p>
 }
 else
 {
-    <h1 class="mb-4">@session.Workout?.Name</h1>
+    <h1 class="mb-4">@_session.Workout?.Name</h1>
 
-    @foreach (var group in session.Sets.GroupBy(s => s.ExerciseId))
+    @foreach (var group in _session.Sets.GroupBy(s => s.ExerciseId))
     {
         <div class="card mb-3">
             <div class="card-body">
@@ -58,28 +57,28 @@ else
 
     [Parameter] public int Id { get; set; }
 
-    private WorkoutSession? session;
-    private Dictionary<string, string> exerciseNames = new();
+    private WorkoutSession? _session;
+    private readonly Dictionary<string, string> _exerciseNames = new();
 
     protected override async Task OnInitializedAsync()
     {
-        session = await SessionRepo.GetByIdAsync(Id);
+        _session = await SessionRepo.GetByIdAsync(Id);
         await LoadNames();
     }
 
     private string GetExerciseName(string exerciseId)
-        => exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
+        => _exerciseNames.TryGetValue(exerciseId, out var name) ? name : "Unknown";
 
     private async Task LoadNames()
     {
-        if (session is null)
+        if (_session is null)
             return;
-        foreach (var set in session.Sets)
+        foreach (var set in _session.Sets)
         {
-            if (!exerciseNames.ContainsKey(set.ExerciseId))
+            if (!_exerciseNames.ContainsKey(set.ExerciseId))
             {
                 var ex = await ExerciseService.GetByIdAsync(set.ExerciseId);
-                exerciseNames[set.ExerciseId] = ex?.Name ?? "Unknown";
+                _exerciseNames[set.ExerciseId] = ex?.Name ?? "Unknown";
             }
         }
     }
