@@ -1,35 +1,21 @@
-﻿using GymTracker.Infrastructure.Data;
-using GymTracker.Infrastructure.Repositories;
+﻿using GymTracker.Infrastructure.Repositories;
 using GymTracker.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
-using System.Linq;
-using System.Reflection;
+using GymTracker.Tests.TestHelpers;
 
-namespace GymTracker.Test
+namespace GymTracker.Tests
 {
-    public class GymTrackerTests : IDisposable, IDbContextFactory<GymDbContext>
+    public class GymTrackerTests : IDisposable
     {
-        private readonly SqliteConnection _connection;
+        private readonly TestDbContextFactory _factory = new();
+        private readonly WorkoutRepository _workoutRepo;
+        private readonly WorkoutSessionRepository _sessionRepo;
 
         public GymTrackerTests()
         {
-            _connection = new SqliteConnection("DataSource=:memory:;Foreign Keys=True");
-            _connection.Open();
-
-            using var context = CreateDbContext();
-            context.Database.EnsureCreated();
+            _workoutRepo = new WorkoutRepository(_factory);
+            _sessionRepo = new WorkoutSessionRepository(_factory);
         }
-
-        public GymDbContext CreateDbContext()
-        {
-            var options = new DbContextOptionsBuilder<GymDbContext>()
-                .UseSqlite(_connection)
-                .Options;
-
-            return new GymDbContext(options);
-        }
-
         #region InfrastructureTest
 
         [Fact]
@@ -37,7 +23,7 @@ namespace GymTracker.Test
         {
 
             //Arrange
-            using var context = CreateDbContext();
+            using var context = _factory.CreateDbContext();
 
             var workout = new Workout()
             {
@@ -60,8 +46,8 @@ namespace GymTracker.Test
         public async Task AddWorkout_WithoutName_ThrowsDbUpdateException()
         {
             //Arrange
-            using var context = CreateDbContext();
-            context.Workouts.Add(new Workout { Name = null });
+            using var context = _factory.CreateDbContext();
+            context.Workouts.Add(new Workout { Name = null! });
 
             //Act
             var exception = await Record.ExceptionAsync(() => context.SaveChangesAsync());
@@ -69,12 +55,13 @@ namespace GymTracker.Test
             //Assert
             Assert.IsType<DbUpdateException>(exception);
         }
+
         [Fact]
-        public async Task StartSession_CreateOneLoggedSetPerPlannedSet()
+        public async Task StartSession_CreatesOneLoggedSetPerPlannedSet()
         {
             // Arrange
             int workoutId;
-            using var context = CreateDbContext();
+            using (var context = _factory.CreateDbContext())
             {
                 var workout = new Workout
                 {
@@ -90,7 +77,7 @@ namespace GymTracker.Test
                 workoutId = workout.Id;
             }
 
-            var repo = new WorkoutSessionRepository(this);
+            var repo = new WorkoutSessionRepository(_factory);
 
             // Act
             var session = await repo.StartSessionAsync(workoutId);
@@ -99,7 +86,7 @@ namespace GymTracker.Test
             // Assert
             Assert.NotNull(saved);
             Assert.Equal(workoutId, saved.WorkoutId);
-            Assert.Equal(6, saved.Sets.Count);
+            Assert.Equal(2 + 4, saved.Sets.Count);
 
             var bench = saved.Sets.Where(s => s.ExerciseId == "bench").OrderBy(s => s.SetNumber).ToList();
             Assert.Equal(new[] { 1, 2 }, bench.Select(s => s.SetNumber));
@@ -119,6 +106,6 @@ namespace GymTracker.Test
         #region CoreTest
         //CoreTest
         #endregion
-        public void Dispose() => _connection.Dispose();
+        public void Dispose() => _factory.Dispose();
     }
 }
