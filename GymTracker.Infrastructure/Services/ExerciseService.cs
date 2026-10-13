@@ -22,7 +22,7 @@ public class ExerciseService : IExerciseService
     public async Task<Exercise?> GetByIdAsync(string id)
     {
         var response = await _http.GetAsync($"api/v1/exercises/{id}");
-        
+
         if (!response.IsSuccessStatusCode)
             return null;
         var payload = await response.Content.ReadFromJsonAsync<ExerciseResponse>();
