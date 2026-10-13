@@ -28,7 +28,7 @@
        @foreach (var ex in _results)
        {
               <div class="list-group-item d-flex align-items-center py-3">
-                     <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibo @(string.IsNullOrEmpty(_selectedEquipment) ? "Equipment" : _selectedEquipment)</button>ld p-0"
+                     <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibold p-0"
                              @onclick="() => Toggle(ex.Id)">
                             @ex.Name
                             @if (_selectedIds.Contains(ex.Id))
