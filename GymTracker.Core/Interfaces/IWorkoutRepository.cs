@@ -8,8 +8,8 @@ public interface IWorkoutRepository
     Task AddAsync(Workout workout);
     Task UpdateAsync(Workout workout);
     Task ArchiveAsync(int id);
-    
-    
-    
+
+
+
     Task RemoveExerciseAsync(int workoutExerciseId);
 }

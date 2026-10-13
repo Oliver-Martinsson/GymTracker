@@ -21,9 +21,9 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         var workout = await context.Workouts
             .Include(w => w.WorkoutExercises)
             .FirstAsync(w => w.Id == workoutId);
-        
+
         var session = WorkoutSessionFactory.CreateFrom(workout, DateTime.Now);
-        
+
         context.WorkoutSessions.Add(session);
         await context.SaveChangesAsync();
         return session;
@@ -52,7 +52,7 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         return await context.WorkoutSessions
             .Include(s => s.Workout)
             .Include(s => s.Sets)
-            .Where(s => s.Sets.Any() && s.Sets.All(set => set.Completed ))
+            .Where(s => s.Sets.Any() && s.Sets.All(set => set.Completed))
             .OrderByDescending(s => s.Date)
             .ToListAsync();
     }
@@ -65,10 +65,10 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         {
             return;
         }
-        
+
         existing.Weight = set.Weight;
         existing.Reps = set.Reps;
-        existing.Completed  = set.Completed;
+        existing.Completed = set.Completed;
         await context.SaveChangesAsync();
     }
 
@@ -84,7 +84,7 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         context.WorkoutSessions.Remove(session);
         await context.SaveChangesAsync();
     }
-    
-    
-    
+
+
+
 }

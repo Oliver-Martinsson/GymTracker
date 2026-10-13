@@ -17,7 +17,7 @@ public class OneRepMaxCalculatorTests
         // Assert
         Assert.Equal(weight, actual);
     }
-        
+
     [Theory]
     [InlineData(100, 10, 133.33)]
     [InlineData(60, 5, 70)]

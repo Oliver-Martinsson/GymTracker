@@ -40,18 +40,18 @@ public class ExerciseService : IExerciseService
         var query = new List<string>();
         if (!string.IsNullOrEmpty(bodyPart))
             query.Add($"bodyParts={Uri.EscapeDataString(bodyPart)}");
-        
+
         if (!string.IsNullOrEmpty(equipment))
             query.Add($"equipment={Uri.EscapeDataString(equipment)}");
         query.Add("limit=100");
-        
-        
+
+
         var url = "api/v1/exercises/filter?" + string.Join("&", query);
         var response = await _http.GetFromJsonAsync<ApiResponse>(url);
         return response?.Data ?? new List<Exercise>();
     }
 
-    
-    
-    
+
+
+
 }
