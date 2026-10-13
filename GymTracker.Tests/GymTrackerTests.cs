@@ -29,17 +29,17 @@ namespace GymTracker.Tests
             {
                 Name = "test",
             };
-            
+
             //Act
             context.Workouts.Add(workout);
             await context.SaveChangesAsync();
 
             var savedWorkout = await context.Workouts.FirstOrDefaultAsync(w => w.Id == workout.Id);
-            
+
             //Assert
             Assert.NotNull(savedWorkout);
             Assert.Equal("test", savedWorkout.Name);
-        
+
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace GymTracker.Tests
             Assert.Equal(new[] { 1, 2 }, bench.Select(s => s.SetNumber));
             Assert.All(bench, s => { Assert.Equal(40, s.Weight); Assert.Equal(3, s.Reps); });
 
-            var press = saved.Sets.Where(s => s.ExerciseId == "press").OrderBy(s =>s.SetNumber).ToList();
+            var press = saved.Sets.Where(s => s.ExerciseId == "press").OrderBy(s => s.SetNumber).ToList();
             Assert.Equal(new[] { 1, 2, 3, 4 }, press.Select(s => s.SetNumber));
             Assert.All(press, s => { Assert.Equal(180, s.Weight); Assert.Equal(8, s.Reps); });
         }

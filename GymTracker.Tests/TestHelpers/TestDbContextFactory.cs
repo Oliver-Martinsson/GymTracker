@@ -8,24 +8,24 @@ namespace GymTracker.Tests.TestHelpers
     {
         private readonly SqliteConnection _connection;
 
-    public TestDbContextFactory()
-    {
-        _connection = new SqliteConnection("DataSource=:memory:;Foreign Keys=True");
-        _connection.Open();
+        public TestDbContextFactory()
+        {
+            _connection = new SqliteConnection("DataSource=:memory:;Foreign Keys=True");
+            _connection.Open();
 
-        using var context = CreateDbContext();
-        context.Database.EnsureCreated();
+            using var context = CreateDbContext();
+            context.Database.EnsureCreated();
+        }
+
+        public GymDbContext CreateDbContext()
+        {
+            var options = new DbContextOptionsBuilder<GymDbContext>()
+                .UseSqlite(_connection)
+                .Options;
+
+            return new GymDbContext(options);
+        }
+
+        public void Dispose() => _connection.Dispose();
     }
-
-    public GymDbContext CreateDbContext()
-    {
-        var options = new DbContextOptionsBuilder<GymDbContext>()
-            .UseSqlite(_connection)
-            .Options;
-
-        return new GymDbContext(options);
-    }
-
-    public void Dispose() => _connection.Dispose();
-}
 }

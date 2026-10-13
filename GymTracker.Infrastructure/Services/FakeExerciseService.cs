@@ -18,12 +18,12 @@ public class FakeExerciseService : IExerciseService
     {
         if (string.IsNullOrWhiteSpace(query))
             return GetAllAsync();
-        
+
         var result = _exercises
             .Where(e => e.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
             .ToList();
         return Task.FromResult(result);
-        
+
     }
 
 
@@ -32,7 +32,7 @@ public class FakeExerciseService : IExerciseService
 
     public Task<Exercise?> GetByIdAsync(string id)
         => Task.FromResult(_exercises.FirstOrDefault(e => e.Id == id));
-    
+
     public Task<List<Exercise>> FilterAsync(string? bodyPart, string? equipment)
     {
         var result = _exercises.AsEnumerable();
@@ -42,6 +42,6 @@ public class FakeExerciseService : IExerciseService
             result = result.Where(e => e.Equipments.Contains(equipment));
         return Task.FromResult(result.ToList());
     }
-    
-    
+
+
 }
