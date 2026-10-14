@@ -135,7 +135,7 @@ namespace GymTracker.Tests
             var sessionId = await TestData.SeedSessionAsync(_factory);
             var seession = await _sessionRepo.GetByIdAsync(sessionId);
             var first = seession!.Sets.First(s => s.SetNumber == 1);
-            var second = seession!.Sets.First(s=> s.SetNumber == 2);
+            var second = seession!.Sets.First(s => s.SetNumber == 2);
 
             //Act
             await _sessionRepo.UpdateSetAsync(new LoggedSet { Id = first.Id, Weight = 50, Reps = 5, Completed = true });
@@ -152,7 +152,7 @@ namespace GymTracker.Tests
         {
             //Act
             var exception = await Record.ExceptionAsync(() => _sessionRepo.UpdateSetAsync(new LoggedSet { Id = 999 }));
-            
+
             //Assert
             Assert.Null(exception);
         }
@@ -218,7 +218,7 @@ namespace GymTracker.Tests
             var result = await _sessionRepo.GetCompletedAsync();
 
             //Assert
-            Assert.Equal(new[] {newerId, olderId }, result.Select(s => s.Id).ToArray());
+            Assert.Equal(new[] { newerId, olderId }, result.Select(s => s.Id).ToArray());
         }
         [Fact]
         public async Task Archive_HideWorkoutFromGetAllAndGetById_ButKeepRow()
