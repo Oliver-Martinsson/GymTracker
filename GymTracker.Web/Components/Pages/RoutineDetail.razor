@@ -1,10 +1,10 @@
-﻿@page "/Routines/{Id:int}"
+﻿@page "/routines/{Id:int}"
 @rendermode InteractiveServer
 @using GymTracker.Core.Models
 @using GymTracker.Core.Interfaces
-@inject IWorkoutRepository Repo
+@inject IWorkoutRepository WorkoutRepo
 @inject IExerciseService ExerciseService
-@inject NavigationManager Nav
+@inject NavigationManager Navigation
 
 <h3>Routine</h3>
 
@@ -23,13 +23,13 @@ else
         
          <div class="card mb-4">
             <div class="list-group list-group-flush">
-                @foreach (var workoutex in _routine.WorkoutExercises)
+                @foreach (var workoutExercise in _routine.WorkoutExercises)
                 {
                     <div class="list-group-item d-flex align-items-center py-3">
-                        <span class="fw-semibold">@GetExerciseName(workoutex.ExerciseId)</span>
+                        <span class="fw-semibold">@GetExerciseName(workoutExercise.ExerciseId)</span>
                         
                         <span class="ms-auto text-secondary"></span>
-                        <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveExercise(workoutex.Id)">Delete</button>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveExercise(workoutExercise.Id)">Delete</button>
                     </div>
                 }
                 @if (_routine.WorkoutExercises.Count == 0)
@@ -41,7 +41,7 @@ else
         
         <div class="d-flex justify-content-center my-4">
             <button class="btn btn-primary btn-lg" 
-                    @onclick="@(() => Nav.NavigateTo($"/AddExercise/{Id}/add-exercise"))"> + Add Exercise</button>
+                    @onclick="@(() => Navigation.NavigateTo($"/routines/{Id}/add-exercise"))"> + Add Exercise</button>
         </div>
         
         <a href="/routines" class="btn btn-link mt-3">Back</a>
@@ -58,7 +58,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _routine = await Repo.GetByIdAsync(Id);
+        _routine = await WorkoutRepo.GetByIdAsync(Id);
         
         await LoadNames();
     }
@@ -68,8 +68,8 @@ else
     
     private async Task RemoveExercise(int workoutExerciseId)
     {
-        await Repo.RemoveExerciseAsync(workoutExerciseId);
-        _routine = await Repo.GetByIdAsync(Id);
+        await WorkoutRepo.RemoveExerciseAsync(workoutExerciseId);
+        _routine = await WorkoutRepo.GetByIdAsync(Id);
     }
 
     
@@ -79,12 +79,12 @@ else
     {
         if (_routine is  null)
             return;
-        foreach (var we in _routine.WorkoutExercises)
+        foreach (var workoutExercise in _routine.WorkoutExercises)
         {
-            if (!_exerciseNames.ContainsKey(we.ExerciseId))
+            if (!_exerciseNames.ContainsKey(workoutExercise.ExerciseId))
             {
-                var ex = await ExerciseService.GetByIdAsync(we.ExerciseId);
-                _exerciseNames[we.ExerciseId] = ex?.Name ?? "Unknown";
+                var ex = await ExerciseService.GetByIdAsync(workoutExercise.ExerciseId);
+                _exerciseNames[workoutExercise.ExerciseId] = ex?.Name ?? "Unknown";
             }
         }
     }
