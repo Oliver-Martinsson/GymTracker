@@ -1,7 +1,7 @@
 ﻿@page "/routines"
 @using GymTracker.Core.Interfaces
 @rendermode InteractiveServer
-@inject IWorkoutRepository Repo
+@inject IWorkoutRepository WorkoutRepo
 @using GymTracker.Core.Models
 @inject IWorkoutSessionRepository SessionRepo
 @inject NavigationManager Navigation
@@ -43,10 +43,10 @@
                     </a>
                     
                     
-                    <button class="btn btn-success btn-sm me-2" @onclick="() => StartWorkout(routine.Id)">Start Workout</button>
+                    <button class="btn btn-success btn-sm me-2" @onclick="() => StartSession(routine.Id)">Start Workout</button>
                     
                     
-                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteRoutine(routine.Id)">Delete</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => ArchiveRoutine(routine.Id)">Delete</button>
                 </div>
             </div>
         }
@@ -59,20 +59,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _routines = await Repo.GetAllAsync();
+        _routines = await WorkoutRepo.GetAllAsync();
     }
 
-    private async Task DeleteRoutine(int id)
+    private async Task ArchiveRoutine(int id)
     {
-        await Repo.ArchiveAsync(id);
-        _routines = await Repo.GetAllAsync();
+        await WorkoutRepo.ArchiveAsync(id);
+        _routines = await WorkoutRepo.GetAllAsync();
     }
 
 
-    private async Task StartWorkout(int id)
+    private async Task StartSession(int id)
     {
         var session = await SessionRepo.StartSessionAsync(id);
-        Navigation.NavigateTo($"/Session/{session.Id}");
+        Navigation.NavigateTo($"/sessions/{session.Id}");
     }
     
 }
