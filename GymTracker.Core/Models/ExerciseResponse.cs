@@ -1,10 +1,9 @@
 using System.Text.Json.Serialization;
 
-namespace GymTracker.Core.Models
+namespace GymTracker.Core.Models;
+
+public class ExerciseResponse
 {
-    public class ExerciseResponse
-    {
-        [JsonPropertyName("data")]
-        public Exercise? Data { get; set; }
-    }
+    [JsonPropertyName("data")]
+    public Exercise? Data { get; set; }
 }
