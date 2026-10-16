@@ -72,7 +72,7 @@
     private async Task StartSession(int id)
     {
         var session = await SessionRepo.StartSessionAsync(id);
-        Navigation.NavigateTo($"/sessions/{session.Id}");
+        Navigation.NavigateTo($"/session/{session.Id}");
     }
     
 }
