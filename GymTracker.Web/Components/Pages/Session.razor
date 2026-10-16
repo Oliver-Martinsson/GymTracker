@@ -23,7 +23,7 @@ else
                     <h6 class="fw-semibold">@GetExerciseName(exerciseSets.Key)</h6>
                     @if (exerciseSets.Any(s => s.Completed))
                     {
-                        <span class="text-muted">1RM: @exerciseSets.Where(s => s.Completed).Max(s => OneRepMaxCalculator.Epley(s.Weight, s.Reps)).ToString("0.#") kg</span>
+                        <span class="text-muted">1RM: @_BestOneRepMax(exerciseSets).ToString("0.#") kg</span>
                     }
                 </div>
 
@@ -31,13 +31,13 @@ else
                 {
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <span>Set @set.SetNumber</span>
-
-                        <input type="number" class="form-control" style="width: 90px"
-                               @bind="set.Weight" @bind:after="() => SaveSet(set)"/>
-
+                        
                         <input type="number" class="form-control" style="width: 90px"
                                @bind="set.Reps" @bind:after="() => SaveSet(set)"/>
-
+                        
+                        <input type="number" class="form-control" style="width: 90px"
+                               @bind="set.Weight" @bind:after="() => SaveSet(set)"/>
+                        
                         <input type="checkbox" class="form-check-input m-0" style="height: 2.375rem; width: 2.375rem"
                                @bind="set.Completed" @bind:after="() => SaveSet(set)"/>
                     </div>
@@ -59,6 +59,9 @@ else
 
     private WorkoutSession? _session;
     private readonly Dictionary<string, string> _exerciseNames = new();
+    private static double _BestOneRepMax(IEnumerable<LoggedSet> sets)
+        => sets.Where(s => s.Completed)
+            .Max(s => OneRepMaxCalculator.Epley(s.Weight, s.Reps));
 
     protected override async Task OnInitializedAsync()
     {
