@@ -33,19 +33,11 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
         return await context.WorkoutSessions
+            .Include(s => s.Workout)
             .Include(s => s.Sets)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task<List<WorkoutSession>> GetByWorkoutAsync(int workoutId)
-    {
-        await using var context = await _contextFactory.CreateDbContextAsync();
-        return await context.WorkoutSessions
-            .Include(s => s.Sets)
-            .Where(s => s.WorkoutId == workoutId)
-            .OrderByDescending(s => s.Date)
-            .ToListAsync();
-    }
     public async Task<List<WorkoutSession>> GetCompletedAsync()
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
@@ -71,20 +63,4 @@ public class WorkoutSessionRepository : IWorkoutSessionRepository
         existing.Completed = set.Completed;
         await context.SaveChangesAsync();
     }
-
-    public async Task DeleteAsync(int id)
-    {
-        await using var context = await _contextFactory.CreateDbContextAsync();
-        var session = await context.WorkoutSessions.FindAsync(id);
-        if (session is null)
-        {
-            return;
-        }
-
-        context.WorkoutSessions.Remove(session);
-        await context.SaveChangesAsync();
-    }
-
-
-
 }
