@@ -1,10 +1,10 @@
-@page "/AddExercise/{Id:int}/add-exercise"
+@page "/routines/{Id:int}/add-exercise"
 @using GymTracker.Core.Interfaces
 @using GymTracker.Core.Models
 @rendermode InteractiveServer
 @inject IExerciseService ExerciseService
-@inject IWorkoutRepository Repo
-@inject NavigationManager Nav
+@inject IWorkoutRepository WorkoutRepo
+@inject NavigationManager Navigation
 
 
 <h3>AddExercise</h3>
@@ -25,18 +25,18 @@
 </div>
 
 <div class="list-group">
-       @foreach (var ex in _results)
+       @foreach (var exercise in _results)
        {
               <div class="list-group-item d-flex align-items-center py-3">
                      <button class="btn btn-link text-start flex-fill text-decoration-none fw-semibold p-0"
-                             @onclick="() => Toggle(ex.Id)">
-                            @ex.Name
-                            @if (_selectedIds.Contains(ex.Id))
+                             @onclick="() => Toggle(exercise.Id)">
+                            @exercise.Name
+                            @if (_selectedIds.Contains(exercise.Id))
                             {
                                    <span class="text-success ms-2">✓</span>
                             }
                      </button>
-                     <a href="@($"/exercises/{ex.Id}")" class="btn btn-sm btn-outline-secondary ms-2">
+                     <a href="@($"/exercises/{exercise.Id}")" class="btn btn-sm btn-outline-secondary ms-2">
                             i
                      </a>
               </div>
@@ -76,6 +76,8 @@
 }
 @code {
     [Parameter] public int Id { get; set; }
+    private const int DefaultSets = 3;
+    private const int DefaultReps = 10;
     private readonly HashSet<string> _selectedIds = new();
     private string _selectedBodyPart = "";
     private string _selectedEquipment = "";
@@ -104,7 +106,7 @@
     private async Task Save()
     {
            if (_selectedIds.Count == 0) return;
-           var routine = await Repo.GetByIdAsync(Id);
+           var routine = await WorkoutRepo.GetByIdAsync(Id);
            if (routine is null) return;
 
            foreach (var exerciseId in _selectedIds)
@@ -112,14 +114,14 @@
                   routine.WorkoutExercises.Add(new WorkoutExercise
                   {
                          ExerciseId = exerciseId,
-                         Sets = 3,
-                         Reps = 10
+                         Sets = DefaultSets,
+                         Reps = DefaultReps
                          
                   });
            }
            
-           await Repo.UpdateAsync(routine);
-           Nav.NavigateTo($"/Routines/{Id}");
+           await WorkoutRepo.UpdateAsync(routine);
+           Navigation.NavigateTo($"/routines/{Id}");
     }
     private async Task RunSearch()
     {

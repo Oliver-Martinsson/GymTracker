@@ -2,8 +2,8 @@
 @rendermode InteractiveServer
 @using GymTracker.Core.Interfaces
 @using GymTracker.Core.Models
-@inject IWorkoutRepository Repo
-@inject NavigationManager Nav
+@inject IWorkoutRepository WorkoutRepo
+@inject NavigationManager Navigation
 
 
 
@@ -33,7 +33,7 @@
         if (string.IsNullOrEmpty(_newRoutine.Name))
             return;
         
-        await Repo.AddAsync(_newRoutine);
-        Nav.NavigateTo("/routines");
+        await WorkoutRepo.AddAsync(_newRoutine);
+        Navigation.NavigateTo("/routines");
     }
 }

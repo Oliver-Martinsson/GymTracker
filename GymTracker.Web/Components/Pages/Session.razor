@@ -1,11 +1,11 @@
-@page "/Session/{Id:int}"
+@page "/session/{Id:int}"
 @using GymTracker.Core.Interfaces
 @rendermode InteractiveServer
 @inject IExerciseService ExerciseService
 @using GymTracker.Core.Models
 @using GymTracker.Core.Calculations
 @inject IWorkoutSessionRepository SessionRepo
-@inject NavigationManager Nav
+
 
 @if (_session is null)
 {
@@ -15,19 +15,19 @@ else
 {
     <h1 class="mb-4">@_session.Workout?.Name</h1>
 
-    @foreach (var group in _session.Sets.GroupBy(s => s.ExerciseId))
+    @foreach (var exerciseSets in _session.Sets.GroupBy(s => s.ExerciseId))
     {
         <div class="card mb-3">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
-                    <h6 class="fw-semibold">@GetExerciseName(group.Key)</h6>
-                    @if (group.Any(s => s.Completed))
+                    <h6 class="fw-semibold">@GetExerciseName(exerciseSets.Key)</h6>
+                    @if (exerciseSets.Any(s => s.Completed))
                     {
-                        <span class="text-muted">1RM: @group.Where(s => s.Completed).Max(s => OneRepMaxCalculator.Epley(s.Weight, s.Reps)).ToString("0.#") kg</span>
+                        <span class="text-muted">1RM: @exerciseSets.Where(s => s.Completed).Max(s => OneRepMaxCalculator.Epley(s.Weight, s.Reps)).ToString("0.#") kg</span>
                     }
                 </div>
 
-                @foreach (var set in group.OrderBy(s => s.SetNumber))
+                @foreach (var set in exerciseSets.OrderBy(s => s.SetNumber))
                 {
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <span>Set @set.SetNumber</span>
@@ -77,8 +77,8 @@ else
         {
             if (!_exerciseNames.ContainsKey(set.ExerciseId))
             {
-                var ex = await ExerciseService.GetByIdAsync(set.ExerciseId);
-                _exerciseNames[set.ExerciseId] = ex?.Name ?? "Unknown";
+                var exercise = await ExerciseService.GetByIdAsync(set.ExerciseId);
+                _exerciseNames[set.ExerciseId] = exercise?.Name ?? "Unknown";
             }
         }
     }
